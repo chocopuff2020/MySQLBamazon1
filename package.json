@@ -1,0 +1,24 @@
+{
+  "name": "mysql_bamazon1",
+  "version": "1.0.0",
+  "description": "Bamazon online seller -- Customer side--",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michelledai2020/MySQLBamazon1.git"
+  },
+  "author": "Michelle Dai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michelledai2020/MySQLBamazon1/issues"
+  },
+  "homepage": "https://github.com/michelledai2020/MySQLBamazon1#readme",
+  "dependencies": {
+    "console.table": "^0.8.0",
+    "inquirer": "^3.0.6",
+    "mysql": "^2.13.0"
+  }
+}
