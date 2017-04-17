@@ -1,6 +1,8 @@
 <h1> HOW THIS WORKS </h1>
 <h3> Step 1: Create database </h3>
-![pic1](https://cloud.githubusercontent.com/assets/13081907/25101359/de1273f4-2368-11e7-948a-68b2b58ca8b5.jpg)
+
+![pic1](https://cloud.githubusercontent.com/assets/13081907/25102007/5b69bab8-236b-11e7-8f94-607eb867b31a.jpg)
+
 <h3> Step 2: Create table </h3>
 ![pic2](https://cloud.githubusercontent.com/assets/13081907/25101360/de14adcc-2368-11e7-93f6-fd08b907bb6b.jpg)
 
