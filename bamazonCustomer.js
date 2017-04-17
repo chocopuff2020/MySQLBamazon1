@@ -70,7 +70,15 @@ connection.query('SELECT productID,product_name,price FROM products', function (
                         name:'confirmation',
                         message:'Would you like to proceed with the order? '
                       }
-                    ]);
+                    ]).then(function (answers) {
+                        if(answers.confirmation == true){
+                            console.log('**********************************************');
+                            console.log('CONGRATULATIONS! YOUR ORDER HAS BEEN PLACED!!');
+                            console.log('**********************************************');
+                        } else {
+                            console.log('YOUR ORDER HAS BEEN CANCELLED');
+                        }
+                    });
               });
               connection.end();
 
