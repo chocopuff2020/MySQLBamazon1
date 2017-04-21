@@ -4,8 +4,10 @@ var inquirer = require('inquirer');
 var buyProductID;
 var buyQuantity;
 var itemPrice;
+var inStock;
 var total;
 var availability;
+var updatedQuantity;
 
 
 var connection = mysql.createConnection({
@@ -27,10 +29,14 @@ connection.query('SELECT productID,product_name,price FROM products', function (
       console.log('========================= SHOPPING CART =============================');
       inquirer.prompt([
             { name: "buyProductID",
-              message: "What is the productID of the item you want to buy? "
+              message: "What is the productID of the item you want to buy? ",
+              validator: /^[0-9]*$/,
+              warning: 'Sorry, please enter a number'
              },
              { name: "buyQuantity",
-              message: "How many would you like to buy? "
+              message: "How many would you like to buy? ",
+              validator: /^[0-9]*$/,
+              warning: 'Sorry, please enter a number'
              }
       ]).then(function (answers) {
               buyProductID = answers.buyProductID;
@@ -43,29 +49,27 @@ connection.query('SELECT productID,product_name,price FROM products', function (
 
               connection.query(`SELECT stock_quantity FROM products WHERE productID = ${buyProductID}`, function (error, results, fields) {
                     if (error) throw error;
-                    // console.log(results[0].stock_quantity);
-                    var inStock = results[0].stock_quantity;
+                    inStock = results[0].stock_quantity;
                     if (inStock >= buyQuantity) {
-                        availability = 'YES'
+                        availability = 'YES';
+                        updateStock();
                     }
                     else {
-                        availability = 'OUT OF STOCK'
+                        availability = 'OUT OF STOCK';
                     }
-
+                    console.log(inStock);
               });
 
-              connection.query(`SELECT product_name FROM products WHERE productID = ${buyProductID}`, function (error, results, fields) {
-                    if (error) throw error;
-                    // console.log(results[0].product_name);
-                    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-                    console.log('========================= ORDER CONFIRMATION ========================');
-                    console.log('Item : '+ results[0].product_name);
-                    console.log('Quantity : ' + buyQuantity);
-                    console.log('Price : $' + itemPrice + ' /per');
-                    console.log('Total : $' + buyQuantity * itemPrice);
-                    console.log('Availability: ' + availability);
-                    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-                    inquirer.prompt([
+
+
+              function updateStock() {
+                     connection.query(`UPDATE products SET stock_quantity=stock_quantity-${buyQuantity} WHERE productID=${buyProductID}`, function (error, results, fields) {
+                             if (error) throw error;
+                      });
+                };
+
+              function confirmation() {
+                      inquirer.prompt([
                       {type:'confirm',
                         name:'confirmation',
                         message:'Would you like to proceed with the order? '
@@ -79,10 +83,25 @@ connection.query('SELECT productID,product_name,price FROM products', function (
                             console.log('YOUR ORDER HAS BEEN CANCELLED');
                         }
                     });
-              });
-              connection.end();
+                };
 
+              connection.query(`SELECT product_name FROM products WHERE productID = ${buyProductID}`, function (error, results, fields) {
+                    if (error) throw error;
+                    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+                    console.log('========================= ORDER CONFIRMATION ========================');
+                    console.log('Item : '+ results[0].product_name);
+                    console.log('Quantity : ' + buyQuantity);
+                    console.log('Price : $' + itemPrice + ' /per');
+                    console.log('Total : $' + buyQuantity * itemPrice);
+                    console.log('Availability: ' + availability);
+                    console.log('Quantity left in stock: '+ inStock);
+                    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+                    if(availability == 'YES') {
+                          confirmation();
+                    } else {
+                          console.log('SORRY, INSUFFICIENT QUANTITY IN-STOCK, COME BACK LATER!');
+                          console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+                    }
+              });
       });
 });
-
-// connection.end();
