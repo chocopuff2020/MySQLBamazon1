@@ -44,10 +44,11 @@ connection.query('SELECT productID,product_name,price FROM products', function (
 
               connection.query(`SELECT price FROM products WHERE productID = ${buyProductID}`, function (error, results, fields) {
                     if (error) throw error;
-                    itemPrice = results[0].price
+                    itemPrice = results[0].price;
+                    console.log(itemPrice);
               });
 
-              connection.query(`SELECT stock_quantity FROM products WHERE productID = ${buyProductID}`, function (error, results, fields) {
+              connection.query(`SELECT stock_quantity FROM products WHERE productID =${buyProductID}`, function (error, results, fields) {
                     if (error) throw error;
                     inStock = results[0].stock_quantity;
                     if (inStock >= buyQuantity) {
@@ -63,7 +64,7 @@ connection.query('SELECT productID,product_name,price FROM products', function (
 
 
               function updateStock() {
-                     connection.query(`UPDATE products SET stock_quantity=stock_quantity-${buyQuantity} WHERE productID=${buyProductID}`, function (error, results, fields) {
+                     connection.query(`UPDATE products SET stock_quantity=stock_quantity-${buyQuantity} WHERE productID='${buyProductID}'`, function (error, results, fields) {
                              if (error) throw error;
                       });
                 };

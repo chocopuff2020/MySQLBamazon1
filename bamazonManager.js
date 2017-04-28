@@ -4,6 +4,10 @@ var inquirer = require('inquirer');
 
 var addLowInventory;
 var quantityAdd;
+var productName;
+var departmentName;
+var price;
+var stockQuantity;
 
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -57,19 +61,46 @@ function addInventory() {
     });
 }
 
-// function addMore() {
-//     inquirer.prompt([
-//         {
-//           type: 'confirm',
-//           message: 'Would you like to add more inventory? ',
-//           name: 'addMore'
-//         }
-//     ]).then(function(results) {
-//         if(results.addMore == true) {
-//             addInventory();
-//         }
-//     })
-// }
+function insertNew() {
+    inquirer.prompt([
+        {
+          type: 'input',
+          message: 'What is the name of the product you want to add ?  ',
+          name: 'productName'
+        },
+        {
+          type: 'input',
+          message: 'Which department does it belong to ? ',
+          name: 'departmentName'
+        },
+        {
+          type: 'input',
+          message: 'What is the price for each item ? ',
+          name: 'price'
+        },
+        {
+          type: 'input',
+          message: 'How many are in-stock ? ',
+          name: 'stockQuantity'
+        }
+    ]).then(function(results) {
+          productName = results.productName;
+          departmentName = results.departmentName;
+          price = results.price;
+          stockQuantity = results.stockQuantity;
+          console.log(productName,departmentName,price,stockQuantity);
+          insertNewQueries();
+    });
+}
+
+function insertNewQueries() {
+      connection.query(`INSERT INTO products (product_name,department_name,price,stock_quantity) VALUES ('${productName}','${departmentName}','${price}','${stockQuantity}')`, function (error, results, fields) {
+          if (error) throw error;
+          console.log('New product information has successfully added!');
+      })
+}
+
+
 inquirer.prompt([
   {
     type: 'checkbox',
@@ -107,9 +138,9 @@ inquirer.prompt([
               break;
         case 'Add to Inventory':
               promptAdd();
-
               break;
         case 'Add New Product':
+              insertNew();
               break;
     }
 });
